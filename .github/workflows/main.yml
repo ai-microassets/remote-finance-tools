@@ -1,0 +1,30 @@
+name: Auto Expand Micro-SaaS
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Executa todos os dias à meia-noite
+  workflow_dispatch: # Permite-te clicar num botão e executar manualmente para testar
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Run Generator Script
+        run: python generator/generate.py
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "AI-Asset-Bot"
+          git config --global user.email "bot@microassets.ai"
+          git add .
+          git commit -m "🤖 AI Agent: New financial tools added" || echo "No changes to commit"
+          git push
