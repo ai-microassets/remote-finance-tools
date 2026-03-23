@@ -1,17 +1,22 @@
 name: Auto Expand Micro-SaaS
 
 on:
+  workflow_dispatch: # Permite-te clicar no botão "Run workflow" para testar agora
   schedule:
-    - cron: "0 0 * * *" # Executa todos os dias à meia-noite
-  workflow_dispatch: # Permite-te clicar num botão e executar manualmente para testar
+    - cron: "0 0 * * *"
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # ESSENCIAL: Dá permissões explícitas para o robô escrever no repo
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Garante que ele vê todo o histórico
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -21,10 +26,13 @@ jobs:
       - name: Run Generator Script
         run: python generator/generate.py
 
+      - name: Debug - List Files
+        run: ls -R pages/ # Isto serve para vermos no log se as páginas foram criadas
+
       - name: Commit and Push changes
         run: |
-          git config --global user.name "AI-Asset-Bot"
-          git config --global user.email "bot@microassets.ai"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "🤖 AI Agent: New financial tools added" || echo "No changes to commit"
-          git push
+          # O comando abaixo evita que o robô falhe se não houver nada novo para adicionar
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 AI Agent: New assets deployed" && git push origin main)
