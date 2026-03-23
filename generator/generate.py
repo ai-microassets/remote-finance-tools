@@ -1,42 +1,56 @@
+import json
 import os
+from datetime import datetime
 
-# Lista de próximas calculadoras a gerar (podes expandir esta lista)
-calculators = [
-    {"slug": "project-profit-margin-calculator", "title": "Project Profit Margin Calculator", "desc": "Calculate the net profit of your freelance projects."},
-    {"slug": "usd-to-eur-salary-converter", "title": "USD to EUR Net Salary Converter", "desc": "Convert your US remote salary to EUR after taxes."},
-    {"slug": "freelancer-emergency-fund-calculator", "title": "Freelancer Emergency Fund Calculator", "desc": "How much should you save for a rainy day?"}
-]
+def slugify(text):
+    return text.lower().replace(" ", "-")
 
-def generate_page(calc):
-    html_content = f"""
+def generate_html(keyword):
+    # Template profissional para as novas páginas
+    return f"""
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>{calc['title']} | RemoteFinanceTools</title>
+        <title>{keyword} | RemoteFinanceTools</title>
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body class="bg-slate-50 p-6">
+    <body class="bg-slate-50 p-6 text-slate-900">
         <div class="max-w-2xl mx-auto">
-            <a href="../index.html" class="text-blue-600">← Back</a>
-            <h1 class="text-3xl font-bold mt-4">{calc['title']}</h1>
-            <p class="text-slate-600 mb-8">{calc['desc']}</p>
+            <a href="../index.html" class="text-blue-600">← Back to Tools</a>
+            <h1 class="text-3xl font-bold mt-6 mb-4">{keyword}</h1>
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                <p class="text-center text-slate-400 italic">Calculator logic for {calc['title']} coming in next update...</p>
+                <p class="text-slate-600 italic">Financial logic for {keyword} is being optimized by our AI. Check back soon for the full interactive calculator.</p>
             </div>
         </div>
     </body>
     </html>
     """
-    
-    file_path = f"pages/{calc['slug']}.html"
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(html_content)
-    print(f"✅ Generated: {file_path}")
 
-# Executar geração
+def main():
+    # 1. Carregar Keywords
+    with open("data/keywords.json") as f:
+        keywords = json.load(f)
+
+    new_pages_count = 0
+    
+    # 2. Criar páginas que ainda não existem
+    for kw in keywords:
+        filename = slugify(kw) + ".html"
+        path = f"pages/{filename}"
+
+        if not os.path.exists(path):
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(generate_html(kw))
+            new_pages_count += 1
+
+    # 3. Atualizar o Log de Crescimento (Stats)
+    total_pages = len(os.listdir('pages'))
+    with open("stats.txt", "a") as f:
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+        f.write(f"[{timestamp}] Total: {total_pages} pages. Added {new_pages_count} today.\n")
+
 if __name__ == "__main__":
     if not os.path.exists('pages'):
         os.makedirs('pages')
-    for c in calculators:
-        generate_page(c)
+    main()
