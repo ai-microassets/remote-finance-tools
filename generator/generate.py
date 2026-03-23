@@ -2,68 +2,61 @@ import json
 import os
 
 def slugify(text):
-    return text.lower().replace(" ", "-")
-
-def get_tool_logic(keyword):
-    # Simulação de lógica inteligente: se a keyword tiver "tax", usa cálculo de taxa
-    if "tax" in keyword.lower():
-        return "result = input * 0.25; // Simple 25% estimate"
-    elif "hourly" in keyword.lower() or "rate" in keyword.lower():
-        return "result = input / 160; // Based on 160h month"
-    else:
-        return "result = input * 1.10; // General margin"
-
-def generate_html(keyword):
-    logic = get_tool_logic(keyword)
-    return f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>{keyword} | RemoteFinanceTools</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
-    <body class="bg-slate-50 text-slate-900 p-8">
-        <div class="max-w-2xl mx-auto">
-            <a href="../index.html" class="text-blue-600 mb-4 inline-block">← Back to Dashboard</a>
-            <h1 class="text-4xl font-black mb-6">{keyword}</h1>
-            
-            <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 mb-8">
-                <label class="block text-sm font-bold mb-2">Enter Amount (€)</label>
-                <input id="val" type="number" class="w-full p-4 bg-slate-100 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-blue-500">
-                <button onclick="runCalc()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg">Calculate Now</button>
-                <h2 id="res" class="text-2xl font-bold mt-6 text-center text-blue-700"></h2>
-            </div>
-
-            <article class="prose lg:prose-xl text-slate-600">
-                <h3 class="text-xl font-bold text-slate-900">Why use a {keyword}?</h3>
-                <p>Managing finances as a digital nomad or freelancer requires precision. This <strong>{keyword}</strong> was designed to help you navigate the complexities of remote work compensation and global tax standards in 2026.</p>
-                <p>By using professional tools, you ensure your business remains profitable and compliant with international standards.</p>
-            </article>
-        </div>
-        <script>
-            function runCalc() {{
-                let input = document.getElementById('val').value;
-                let result = 0;
-                {logic}
-                document.getElementById('res').innerText = "Estimated: €" + result.toFixed(2);
-            }}
-        </script>
-    </body>
-    </html>
-    """
+    return text.lower().replace(" ", "-").replace(".html", "")
 
 def main():
-    if not os.path.exists('pages'): os.makedirs('pages')
-    with open("data/keywords.json") as f:
+    base_dir = os.getcwd()
+    pages_dir = os.path.join(base_dir, 'pages')
+    index_file = os.path.join(base_dir, 'index.html')
+
+    # 1. GERAR PÁGINAS NOVAS (Sem apagar as antigas)
+    with open(os.path.join(base_dir, 'data', 'keywords.json'), 'r') as f:
         keywords = json.load(f)
-    
+
     for kw in keywords:
-        path = f"pages/{slugify(kw)}.html"
-        # Forçamos a sobrescrita para atualizar os esqueletos antigos com a nova lógica
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(generate_html(kw))
-    print("✅ All pages updated with functional logic and SEO text.")
+        filename = slugify(kw) + ".html"
+        path = os.path.join(pages_dir, filename)
+        
+        # SÓ CRIA SE NÃO EXISTIR - Protege o teu trabalho manual
+        if not os.path.exists(path):
+            with open(path, 'w', encoding="utf-8") as f:
+                f.write(f"<html><body><h1>{kw}</h1><p>AI Tool in progress...</p></body></html>")
+
+    # 2. RECONSTRUIR O MENU (Mantendo o teu design profissional)
+    all_pages = sorted([f for f in os.listdir(pages_dir) if f.endswith('.html')])
+    
+    # Criamos os blocos de links com o estilo do teu site
+    links_html = "".join([
+        f'<a href="pages/{p}" class="block p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-500 shadow-sm transition-all">'
+        f'<h3 class="font-bold text-slate-900">{p.replace("-", " ").replace(".html", "").title()}</h3>'
+        f'<span class="text-xs text-blue-600 font-medium font-semibold uppercase">Open Tool →</span>'
+        f'</a>' 
+        for p in all_pages
+    ])
+
+    # O Novo Index com o teu design HERO e os novos links
+    with open(index_file, 'w', encoding="utf-8") as f:
+        f.write(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><title>RemoteFinanceTools | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <nav class="bg-white border-b p-4 mb-8">
+        <div class="max-w-5xl mx-auto font-bold text-blue-600 text-xl italic">RemoteFinanceTools</div>
+    </nav>
+    <header class="max-w-5xl mx-auto px-6 mb-12">
+        <h1 class="text-4xl font-black text-slate-900 mb-2">Your AI Financial Hub</h1>
+        <p class="text-slate-500 italic">Total assets active: {len(all_pages)}</p>
+    </header>
+    <main class="max-w-5xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {links_html}
+    </main>
+</body>
+</html>
+        """)
 
 if __name__ == "__main__":
     main()
