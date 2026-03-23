@@ -1,0 +1,23 @@
+name: Auto Generate Pages
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run script
+        run: python generator/generate.py
+
+      - name: Commit
+        run: |
+          git config --global user.name "bot"
+          git config --global user.email "bot@email.com"
+          git add .
+          git commit -m "auto pages" || echo "no changes"
+          git push
