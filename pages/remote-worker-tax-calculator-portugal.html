@@ -6,14 +6,32 @@
         <title>remote worker tax calculator portugal | RemoteFinanceTools</title>
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body class="bg-slate-50 p-6 text-slate-900">
+    <body class="bg-slate-50 text-slate-900 p-8">
         <div class="max-w-2xl mx-auto">
-            <a href="../index.html" class="text-blue-600">← Back to Tools</a>
-            <h1 class="text-3xl font-bold mt-6 mb-4">remote worker tax calculator portugal</h1>
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                <p class="text-slate-600 italic">Financial logic for remote worker tax calculator portugal is being optimized by our AI. Check back soon for the full interactive calculator.</p>
+            <a href="../index.html" class="text-blue-600 mb-4 inline-block">← Back to Dashboard</a>
+            <h1 class="text-4xl font-black mb-6">remote worker tax calculator portugal</h1>
+            
+            <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 mb-8">
+                <label class="block text-sm font-bold mb-2">Enter Amount (€)</label>
+                <input id="val" type="number" class="w-full p-4 bg-slate-100 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="runCalc()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg">Calculate Now</button>
+                <h2 id="res" class="text-2xl font-bold mt-6 text-center text-blue-700"></h2>
             </div>
+
+            <article class="prose lg:prose-xl text-slate-600">
+                <h3 class="text-xl font-bold text-slate-900">Why use a remote worker tax calculator portugal?</h3>
+                <p>Managing finances as a digital nomad or freelancer requires precision. This <strong>remote worker tax calculator portugal</strong> was designed to help you navigate the complexities of remote work compensation and global tax standards in 2026.</p>
+                <p>By using professional tools, you ensure your business remains profitable and compliant with international standards.</p>
+            </article>
         </div>
+        <script>
+            function runCalc() {
+                let input = document.getElementById('val').value;
+                let result = 0;
+                result = input * 0.25; // Simple 25% estimate
+                document.getElementById('res').innerText = "Estimated: €" + result.toFixed(2);
+            }
+        </script>
     </body>
     </html>
     

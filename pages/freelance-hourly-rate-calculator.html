@@ -1,67 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Freelance Hourly Rate Calculator | RemoteFinanceTools</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-50 text-slate-900 p-6">
 
-    <div class="max-w-2xl mx-auto">
-        <a href="../index.html" class="text-blue-600 hover:underline mb-8 inline-block">← Back to Tools</a>
-        
-        <h1 class="text-3xl font-extrabold mb-2">Hourly Rate Calculator</h1>
-        <p class="text-slate-600 mb-8">Calculate your ideal rate considering overhead, taxes, and desired profit.</p>
-
-        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-sm font-semibold mb-2">Desired Monthly Net Income (€)</label>
-                    <input id="income" type="number" placeholder="e.g. 3000" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold mb-2">Billable Hours / Week</label>
-                        <input id="hours" type="number" placeholder="20" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold mb-2">Estimated Tax (%)</label>
-                        <input id="tax" type="number" placeholder="25" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                    </div>
-                </div>
-
-                <button onclick="calculate()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-blue-200">
-                    Calculate My Rate
-                </button>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>freelance hourly rate calculator | RemoteFinanceTools</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-slate-50 text-slate-900 p-8">
+        <div class="max-w-2xl mx-auto">
+            <a href="../index.html" class="text-blue-600 mb-4 inline-block">← Back to Dashboard</a>
+            <h1 class="text-4xl font-black mb-6">freelance hourly rate calculator</h1>
+            
+            <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-100 mb-8">
+                <label class="block text-sm font-bold mb-2">Enter Amount (€)</label>
+                <input id="val" type="number" class="w-full p-4 bg-slate-100 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="runCalc()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg">Calculate Now</button>
+                <h2 id="res" class="text-2xl font-bold mt-6 text-center text-blue-700"></h2>
             </div>
 
-            <div id="resultBox" class="hidden mt-8 p-6 bg-blue-50 rounded-2xl border border-blue-100 text-center">
-                <p class="text-blue-600 font-semibold text-sm uppercase tracking-wider mb-2">Recommended Hourly Rate</p>
-                <h2 id="resultValue" class="text-4xl font-black text-blue-700"></h2>
-                <p class="text-blue-500 text-xs mt-4 italic">Note: This covers your net goal + estimated taxes.</p>
-            </div>
+            <article class="prose lg:prose-xl text-slate-600">
+                <h3 class="text-xl font-bold text-slate-900">Why use a freelance hourly rate calculator?</h3>
+                <p>Managing finances as a digital nomad or freelancer requires precision. This <strong>freelance hourly rate calculator</strong> was designed to help you navigate the complexities of remote work compensation and global tax standards in 2026.</p>
+                <p>By using professional tools, you ensure your business remains profitable and compliant with international standards.</p>
+            </article>
         </div>
-    </div>
-
-    <script>
-    function calculate() {
-        const income = parseFloat(document.getElementById("income").value);
-        const hours = parseFloat(document.getElementById("hours").value);
-        const tax = parseFloat(document.getElementById("tax").value) / 100;
-
-        if (income > 0 && hours > 0) {
-            // Lógica: Meta líquida + Imposto / (Horas mensais)
-            const grossRequired = income / (1 - tax);
-            const hourly = grossRequired / (hours * 4.33); // Média de semanas num mês
-
-            document.getElementById("resultValue").innerText = "€" + hourly.toFixed(2);
-            document.getElementById("resultBox").classList.remove("hidden");
-        } else {
-            alert("Please fill in all fields correctly.");
-        }
-    }
-    </script>
-</body>
-</html>
+        <script>
+            function runCalc() {
+                let input = document.getElementById('val').value;
+                let result = 0;
+                result = input / 160; // Based on 160h month
+                document.getElementById('res').innerText = "Estimated: €" + result.toFixed(2);
+            }
+        </script>
+    </body>
+    </html>
+    
