@@ -1,21 +1,472 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>RemoteFinanceTools | Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Remote Finance Tools — Free Calculators for Freelancers & Remote Workers</title>
+  <meta name="description" content="Free financial calculators for freelancers and remote workers. Calculate hourly rates, taxes, project profits, and salary conversions instantly. No signup required." />
+  <meta name="keywords" content="freelance calculator, remote worker tax, hourly rate calculator, freelancer tools, self employed tax, freelance net income" />
+  <link rel="canonical" href="https://remote-finance-tools.vercel.app/" />
+  <meta property="og:title" content="Remote Finance Tools — Free Calculators for Freelancers" />
+  <meta property="og:description" content="Free financial calculators for freelancers & remote workers. No signup, no paywalls." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:      #060912;
+      --bg2:     #0c1120;
+      --surface: #0f1728;
+      --s2:      #162035;
+      --border:  #1e2d47;
+      --b2:      #243450;
+      --accent:  #10e8b8;
+      --blue:    #0ea5e9;
+      --purple:  #a855f7;
+      --text:    #eef2ff;
+      --t2:      #94a3c0;
+      --t3:      #4f6280;
+      --gold:    #fbbf24;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; overflow-x: hidden;
+    }
+    .glow-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 55% 35% at 15% 15%, rgba(16,232,184,0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 45% 30% at 85% 85%, rgba(14,165,233,0.05) 0%, transparent 65%),
+        radial-gradient(ellipse 35% 25% at 70% 5%, rgba(168,85,247,0.04) 0%, transparent 65%);
+    }
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(16,232,184,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16,232,184,0.022) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(ellipse 100% 80% at 50% 0%, black 30%, transparent 80%);
+    }
+    .z { position: relative; z-index: 1; }
+
+    /* HEADER */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 62px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px) saturate(1.4);
+      background: rgba(6,9,18,0.82);
+    }
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700; font-size: 0.92rem; color: var(--accent);
+      display: flex; align-items: center; gap: 0.5rem; text-decoration: none;
+    }
+    .logo-pip { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    nav { display: flex; align-items: center; gap: 0.15rem; }
+    nav a {
+      color: var(--t2); text-decoration: none; font-size: 0.82rem; font-weight: 500;
+      padding: 0.38rem 0.72rem; border-radius: 8px; transition: all 0.15s;
+    }
+    nav a:hover { color: var(--text); background: var(--s2); }
+    .nav-btn {
+      background: var(--accent) !important; color: var(--bg) !important;
+      font-weight: 700 !important; margin-left: 0.3rem;
+    }
+    .nav-btn:hover { opacity:0.88 !important; background: var(--accent) !important; }
+
+    /* HERO */
+    .hero {
+      max-width: 800px; margin: 0 auto;
+      padding: 6.5rem 2rem 4rem; text-align: center;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: rgba(16,232,184,0.07); border: 1px solid rgba(16,232,184,0.22);
+      color: var(--accent); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.3rem 0.85rem 0.3rem 0.55rem;
+      border-radius: 999px; margin-bottom: 1.8rem;
+      animation: slideDown 0.5s ease both;
+    }
+    .pill-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: blink 1.5s infinite; }
+    @keyframes slideDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes slideUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 800; line-height: 1.07; letter-spacing: -0.04em;
+      margin-bottom: 1.2rem;
+      animation: slideUp 0.5s 0.1s ease both;
+    }
+    h1 .a { color: var(--accent); }
+    h1 .b { color: var(--blue); }
+    .hero-desc {
+      color: var(--t2); font-size: 1.06rem; line-height: 1.72;
+      max-width: 520px; margin: 0 auto 2.4rem;
+      animation: slideUp 0.5s 0.18s ease both;
+    }
+    .hero-ctas {
+      display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 3.5rem;
+      animation: slideUp 0.5s 0.25s ease both;
+    }
+    .cta-main {
+      background: var(--accent); color: var(--bg);
+      font-family: inherit; font-weight: 700; font-size: 0.88rem;
+      padding: 0.78rem 1.6rem; border-radius: 11px; border: none;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 0.45rem;
+      box-shadow: 0 0 28px rgba(16,232,184,0.28); transition: all 0.15s; cursor: pointer;
+    }
+    .cta-main:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(16,232,184,0.45); }
+    .cta-sec {
+      background: transparent; color: var(--t2);
+      font-family: inherit; font-weight: 600; font-size: 0.88rem;
+      padding: 0.78rem 1.4rem; border-radius: 11px;
+      border: 1px solid var(--b2);
+      text-decoration: none; display: inline-flex; align-items: center; gap: 0.45rem;
+      transition: all 0.15s; cursor: pointer;
+    }
+    .cta-sec:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* STATS */
+    .stat-row {
+      display: flex; border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; background: var(--surface);
+      max-width: 580px; margin: 0 auto;
+      animation: slideUp 0.5s 0.35s ease both;
+    }
+    .stat-cell {
+      flex: 1; padding: 1.1rem 1.2rem; text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-n {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.55rem; font-weight: 700; color: var(--accent);
+      display: block; margin-bottom: 0.2rem;
+    }
+    .stat-l { font-size: 0.67rem; color: var(--t3); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* MAIN */
+    main { max-width: 1100px; margin: 0 auto; padding: 1rem 1.5rem 6rem; }
+
+    /* AFFILIATE */
+    .aff {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+      background: linear-gradient(135deg, rgba(16,232,184,0.05), rgba(14,165,233,0.04));
+      border: 1px solid rgba(16,232,184,0.14); border-radius: 13px;
+      padding: 1.15rem 1.7rem; margin-bottom: 0.5rem;
+    }
+    .aff strong { font-size: 0.88rem; }
+    .aff p { font-size: 0.76rem; color: var(--t2); margin-top: 0.15rem; }
+    .aff-btn {
+      background: var(--accent); color: var(--bg);
+      font-weight: 700; font-size: 0.76rem; padding: 0.48rem 1rem;
+      border-radius: 8px; text-decoration: none; white-space: nowrap; transition: opacity 0.15s; flex-shrink:0;
+    }
+    .aff-btn:hover { opacity:0.85; }
+
+    /* SECTION LABELS */
+    .sh { display: flex; align-items: center; gap: 0.9rem; margin: 3.5rem 0 1.4rem; }
+    .sh-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent); white-space: nowrap;
+    }
+    .sh-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* FEATURED */
+    .featured {
+      background: var(--surface); border: 1px solid var(--b2);
+      border-radius: 20px; padding: 2.2rem; position: relative; overflow: hidden;
+    }
+    .featured::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+      background: linear-gradient(90deg, var(--accent), var(--blue), var(--purple));
+    }
+    .feat-label {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold);
+      background: rgba(251,191,36,0.09); border: 1px solid rgba(251,191,36,0.2);
+      padding: 0.18rem 0.5rem; border-radius: 4px; display: inline-block; margin-bottom: 1rem;
+    }
+    .feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center; }
+    @media(max-width:640px){.feat-grid{grid-template-columns:1fr;}}
+    .feat-grid h2 { font-size: 1.35rem; font-weight: 750; line-height: 1.25; margin-bottom: 0.6rem; }
+    .feat-grid > div > p { font-size: 0.83rem; color: var(--t2); line-height: 1.65; margin-bottom: 1.3rem; }
+    .feat-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--accent); color: var(--bg);
+      font-weight: 700; font-size: 0.82rem; padding: 0.62rem 1.2rem; border-radius: 9px;
+      text-decoration: none; box-shadow: 0 0 20px rgba(16,232,184,0.22); transition: all 0.15s;
+    }
+    .feat-link:hover { transform: translateY(-1px); box-shadow: 0 0 32px rgba(16,232,184,0.38); }
+    .feat-preview {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .fp-lbl { font-size: 0.62rem; color: var(--t3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.7rem; }
+    .fp-val { font-size: 2.2rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; }
+    .fp-val span { font-size: 1rem; color: var(--t3); }
+    .fp-row { display: flex; justify-content: space-between; font-size: 0.7rem; padding: 0.3rem 0; border-bottom: 1px solid var(--border); }
+    .fp-row:last-child { border: none; }
+    .fp-row span:first-child { color: var(--t3); }
+    .fp-row span:last-child { color: var(--t2); }
+
+    /* TOOL GRID */
+    .tg {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+    }
+    .tc {
+      background: var(--surface); padding: 1.6rem 1.75rem;
+      text-decoration: none; color: inherit;
+      display: flex; flex-direction: column; gap: 0.5rem;
+      transition: background 0.14s; position: relative; min-height: 175px;
+    }
+    .tc:hover { background: var(--s2); }
+    .tc:hover .tc-arr { color: var(--accent); transform: translate(2px,-2px); }
+    .tc-ico { font-size: 1.4rem; margin-bottom: 0.1rem; }
+    .tc-tag {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.14rem 0.42rem; border-radius: 4px; align-self: flex-start;
+    }
+    .tc-tag.g { color: var(--accent); background: rgba(16,232,184,0.07); border: 1px solid rgba(16,232,184,0.15); }
+    .tc-tag.b { color: var(--blue); background: rgba(14,165,233,0.07); border: 1px solid rgba(14,165,233,0.15); }
+    .tc-tag.p { color: var(--purple); background: rgba(168,85,247,0.07); border: 1px solid rgba(168,85,247,0.15); }
+    .tc h3 { font-size: 0.93rem; font-weight: 650; line-height: 1.35; }
+    .tc p { font-size: 0.76rem; color: var(--t2); line-height: 1.52; flex: 1; }
+    .tc-arr { position: absolute; top: 1.4rem; right: 1.5rem; color: var(--t3); font-size: 0.85rem; transition: all 0.14s; }
+
+    /* COUNTRY PILLS */
+    .c-pills { display: flex; gap: 0.55rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    .c-pill {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 999px; padding: 0.32rem 0.85rem;
+      font-size: 0.73rem; font-weight: 500; color: var(--t2);
+      text-decoration: none; transition: all 0.14s;
+      display: flex; align-items: center; gap: 0.3rem;
+    }
+    .c-pill:hover { border-color: var(--accent); color: var(--accent); }
+    .c-pill.soon { opacity: 0.38; cursor: default; pointer-events: none; }
+
+    /* HOW IT WORKS */
+    .how-g { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr)); gap: 1.2rem; margin-top: 1.2rem; }
+    .how-c { background: var(--surface); border: 1px solid var(--border); border-radius: 13px; padding: 1.4rem; }
+    .how-n { font-family:'JetBrains Mono',monospace; font-size:0.62rem; color:var(--accent); opacity:0.65; margin-bottom:0.75rem; }
+    .how-c h4 { font-size:0.88rem; font-weight:650; margin-bottom:0.35rem; }
+    .how-c p { font-size:0.76rem; color:var(--t2); line-height:1.55; }
+
+    /* TRUST */
+    .trust {
+      display: flex; align-items: center; justify-content: center;
+      gap: 2rem; flex-wrap: wrap;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 1.4rem 0; margin-top: 3rem;
+    }
+    .trust-i { font-size: 0.75rem; color: var(--t3); display: flex; align-items: center; gap: 0.35rem; }
+    .trust-i strong { color: var(--t2); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; text-align: center; }
+    .fl { max-width: 1100px; margin: 0 auto; }
+    .f-logo { font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:var(--accent); font-weight:700; margin-bottom:0.75rem; display:block; }
+    footer p { color:var(--t3); font-size:0.73rem; line-height:1.75; }
+    footer a { color:var(--t3); text-decoration:none; }
+    footer a:hover { color:var(--accent); }
+
+    @media(max-width:600px){
+      header{padding:0 1rem;}
+      .hero{padding:4rem 1.2rem 3rem;}
+      main{padding:1rem 1rem 4rem;}
+      .stat-row{max-width:100%;}
+      .stat-cell{padding:0.85rem 0.6rem;}
+      .stat-n{font-size:1.25rem;}
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-900">
-    <nav class="bg-white border-b p-4 mb-8">
-        <div class="max-w-5xl mx-auto font-bold text-blue-600 text-xl italic">RemoteFinanceTools</div>
-    </nav>
-    <header class="max-w-5xl mx-auto px-6 mb-12">
-        <h1 class="text-4xl font-black text-slate-900 mb-2">Your AI Financial Hub</h1>
-        <p class="text-slate-500 italic">Total assets active: 4</p>
-    </header>
-    <main class="max-w-5xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a href="pages/freelance-hourly-rate-calculator.html" class="block p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-500 shadow-sm transition-all"><h3 class="font-bold text-slate-900">Freelance Hourly Rate Calculator</h3><span class="text-xs text-blue-600 font-medium font-semibold uppercase">Open Tool →</span></a><a href="pages/freelancer-net-income-calculator.html" class="block p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-500 shadow-sm transition-all"><h3 class="font-bold text-slate-900">Freelancer Net Income Calculator</h3><span class="text-xs text-blue-600 font-medium font-semibold uppercase">Open Tool →</span></a><a href="pages/remote-worker-tax-calculator-portugal.html" class="block p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-500 shadow-sm transition-all"><h3 class="font-bold text-slate-900">Remote Worker Tax Calculator Portugal</h3><span class="text-xs text-blue-600 font-medium font-semibold uppercase">Open Tool →</span></a><a href="pages/usd-to-eur-salary-calculator-after-tax.html" class="block p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-500 shadow-sm transition-all"><h3 class="font-bold text-slate-900">Usd To Eur Salary Calculator After Tax</h3><span class="text-xs text-blue-600 font-medium font-semibold uppercase">Open Tool →</span></a>
-    </main>
+<body>
+<div class="glow-bg"></div>
+<div class="grid-bg"></div>
+
+<header class="z">
+  <a class="logo" href="/">
+    <span>rft</span><div class="logo-pip"></div><span style="color:var(--t3)">tools</span>
+  </a>
+  <nav>
+    <a href="#tools">Tools</a>
+    <a href="#how">How it works</a>
+    <a class="nav-btn" href="pages/freelance-hourly-rate-calculator.html">Try free →</a>
+  </nav>
+</header>
+
+<section class="hero z">
+  <div class="pill"><span class="pill-dot"></span>Free · No signup · 30+ countries</div>
+  <h1>The financial toolkit<br>every <span class="a">freelancer</span><br>actually <span class="b">needs</span></h1>
+  <p class="hero-desc">Stop underselling yourself. Calculate your real rate, estimate taxes, analyse project margins — in seconds, for free.</p>
+  <div class="hero-ctas">
+    <a class="cta-main" href="pages/freelance-hourly-rate-calculator.html">Calculate my rate →</a>
+    <a class="cta-sec" href="#tools">Browse all tools</a>
+  </div>
+  <div class="stat-row">
+    <div class="stat-cell"><span class="stat-n" id="sc1">0</span><span class="stat-l">Calculators</span></div>
+    <div class="stat-cell"><span class="stat-n">30+</span><span class="stat-l">Countries</span></div>
+    <div class="stat-cell"><span class="stat-n">0€</span><span class="stat-l">Forever free</span></div>
+    <div class="stat-cell"><span class="stat-n">100%</span><span class="stat-l">Private</span></div>
+  </div>
+</section>
+
+<main class="z">
+
+  <div class="aff">
+    <div>
+      <strong>Paid in USD but living in Europe?</strong>
+      <p>Wise saves freelancers ~€200/year on currency fees vs. banks. Used by 16M+ people.</p>
+    </div>
+    <a class="aff-btn" href="https://wise.com/?utm_source=remotefinancetools" target="_blank" rel="nofollow sponsored">Open Wise free →</a>
+  </div>
+
+  <!-- FEATURED -->
+  <div class="sh" id="tools">
+    <span class="sh-tag">⭐ Most popular</span>
+    <div class="sh-line"></div>
+  </div>
+
+  <div class="featured">
+    <span class="feat-label">Top tool · 2025</span>
+    <div class="feat-grid">
+      <div>
+        <h2>Freelance Hourly Rate Calculator</h2>
+        <p>The #1 mistake freelancers make is guessing their rate. This tool calculates the mathematically correct number — factoring in your income goal, taxes, expenses, and actual billable hours.</p>
+        <a class="feat-link" href="pages/freelance-hourly-rate-calculator.html">Calculate my rate →</a>
+      </div>
+      <div class="feat-preview">
+        <div class="fp-lbl">Example result</div>
+        <div class="fp-val">€78.40<span>/hr</span></div>
+        <div class="fp-row"><span>Annual gross needed</span><span>€54,600</span></div>
+        <div class="fp-row"><span>Tax (28%)</span><span>−€13,650</span></div>
+        <div class="fp-row"><span>Billable hrs/yr</span><span>697 hrs</span></div>
+        <div class="fp-row"><span>With 20% buffer</span><span>€94.08/hr</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALL TOOLS -->
+  <div class="sh" style="margin-top:2rem;">
+    <span class="sh-tag">All calculators</span>
+    <div class="sh-line"></div>
+  </div>
+
+  <div class="tg">
+    <a class="tc" href="pages/freelancer-net-income-calculator.html">
+      <div class="tc-ico">💶</div><span class="tc-arr">↗</span>
+      <span class="tc-tag g">INCOME</span>
+      <h3>Net Income Calculator</h3>
+      <p>Your real take-home pay after platform fees, expenses, social security, and income tax.</p>
+    </a>
+    <a class="tc" href="pages/project-profit-margin-calculator.html">
+      <div class="tc-ico">📊</div><span class="tc-arr">↗</span>
+      <span class="tc-tag b">PROJECTS</span>
+      <h3>Project Profit Margin</h3>
+      <p>Is this project actually worth taking? Enter quote, hours, expenses, revisions — get a verdict.</p>
+    </a>
+    <a class="tc" href="pages/usd-to-eur-salary-after-tax.html">
+      <div class="tc-ico">💱</div><span class="tc-arr">↗</span>
+      <span class="tc-tag p">CONVERSION</span>
+      <h3>USD → EUR After Tax</h3>
+      <p>Convert your USD remote salary to EUR and see what you keep after local taxes.</p>
+    </a>
+    <a class="tc" href="pages/daily-rate-to-hourly-calculator.html">
+      <div class="tc-ico">📅</div><span class="tc-arr">↗</span>
+      <span class="tc-tag g">RATES</span>
+      <h3>Daily ↔ Hourly Rate</h3>
+      <p>Instantly switch between daily and hourly rates. Essential when negotiating contracts.</p>
+    </a>
+    <a class="tc" href="pages/freelancer-expenses-calculator.html">
+      <div class="tc-ico">🧾</div><span class="tc-arr">↗</span>
+      <span class="tc-tag b">EXPENSES</span>
+      <h3>Business Expenses</h3>
+      <p>Add your deductible expenses and calculate exactly how much tax you save this year.</p>
+    </a>
+    <a class="tc" href="pages/freelance-hourly-rate-calculator.html">
+      <div class="tc-ico">⏱</div><span class="tc-arr">↗</span>
+      <span class="tc-tag g">RATES</span>
+      <h3>Hourly Rate Calculator</h3>
+      <p>Calculate the exact rate you need to hit your income goal with tax and expense buffers.</p>
+    </a>
+  </div>
+
+  <!-- BY COUNTRY -->
+  <div class="sh">
+    <span class="sh-tag">By country</span>
+    <div class="sh-line"></div>
+  </div>
+  <p style="color:var(--t2);font-size:0.83rem;margin-bottom:0.8rem;">Tax calculators built with real local rates — not generic estimates.</p>
+  <div class="c-pills">
+    <a class="c-pill" href="pages/freelancer-tax-calculator-portugal.html">🇵🇹 Portugal — IRS + Social Security</a>
+    <a class="c-pill" href="pages/freelancer-tax-calculator-uk.html">🇬🇧 UK — Income Tax & NIC</a>
+    <a class="c-pill" href="pages/usd-to-eur-salary-after-tax.html">🇺🇸 US → Europe Converter</a>
+    <span class="c-pill soon">🇩🇪 Germany (soon)</span>
+    <span class="c-pill soon">🇫🇷 France (soon)</span>
+    <span class="c-pill soon">🇧🇷 Brazil (soon)</span>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="sh" id="how">
+    <span class="sh-tag">How it works</span>
+    <div class="sh-line"></div>
+  </div>
+  <div class="how-g">
+    <div class="how-c"><div class="how-n">01 ——</div><h4>Pick a tool</h4><p>Rate calculators, tax estimators, project analysers — pick what you need.</p></div>
+    <div class="how-c"><div class="how-n">02 ——</div><h4>Enter your numbers</h4><p>Your income goal, hours, country. 30 seconds. No account required.</p></div>
+    <div class="how-c"><div class="how-n">03 ——</div><h4>Get real answers</h4><p>Not averages — calculations based on your specific situation.</p></div>
+    <div class="how-c"><div class="how-n">04 ——</div><h4>Make better decisions</h4><p>Know your floor rate. Evaluate projects. Stop leaving money on the table.</p></div>
+  </div>
+
+  <div class="trust">
+    <span class="trust-i">✓ <strong>No account</strong> needed</span>
+    <span class="trust-i">✓ <strong>No data</strong> collected</span>
+    <span class="trust-i">✓ <strong>No ads</strong> blocking the page</span>
+    <span class="trust-i">✓ Updated for <strong>2025 / 26</strong></span>
+    <span class="trust-i">✓ Open-source <strong>logic</strong></span>
+  </div>
+</main>
+
+<footer class="z">
+  <div class="fl">
+    <span class="f-logo">rft_tools</span>
+    <p>
+      © 2025 Remote Finance Tools &nbsp;·&nbsp;
+      <a href="sitemap.xml">Sitemap</a> &nbsp;·&nbsp;
+      <a href="pages/freelancer-tax-calculator-portugal.html">Portugal Tax</a> &nbsp;·&nbsp;
+      <a href="pages/freelancer-tax-calculator-uk.html">UK Tax</a> &nbsp;·&nbsp;
+      <a href="pages/freelance-hourly-rate-calculator.html">Hourly Rate</a> &nbsp;·&nbsp;
+      <a href="pages/project-profit-margin-calculator.html">Project Margin</a>
+    </p>
+    <p style="margin-top:0.4rem;font-size:0.68rem;">
+      Contains affiliate links — we may earn a commission at no cost to you. All figures are estimates; verify with a qualified accountant.
+    </p>
+  </div>
+</footer>
+
+<script>
+// Animated counter
+(function() {
+  const el = document.getElementById('sc1');
+  let n = 0;
+  const tick = () => { el.textContent = (++n) + '+'; if (n < 8) setTimeout(tick, 80); };
+  setTimeout(tick, 700);
+})();
+</script>
 </body>
 </html>
-        
